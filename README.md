@@ -25,7 +25,7 @@ task list and remove tasks once completed.
   the mobile app and the Raspberry Pi.
 - **Freenove 5" Touchscreen:** Display interface for interacting with the task
   manager on the Raspberry Pi.
-- **C & Python:** Backend programming languages used to manage tasks and NFC
+- **Python:** Backend programming languages used to manage tasks and NFC
   communication.
 - **React-Native:** Framework for developing the cross-platform mobile app.
 
@@ -64,7 +64,7 @@ task list and remove tasks once completed.
 - Install required Python dependencies:
 
   ```bash
-  pip install -r requirements.txt
+  pip install -r RPi/requirements.txt
   ```
 
 - Set up the React-Native mobile app:
@@ -81,6 +81,7 @@ task list and remove tasks once completed.
 - Run the backend on the Raspberry Pi:
 
   ```bash
+  cd RPi
   python3 main.py
   ```
 

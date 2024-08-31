@@ -1,10 +1,14 @@
 import tkinter as tk
 from interface import TaskManagerInterface
+from db import DatabaseManager
 
 
 def main():
+    db = DatabaseManager()
+
     root = tk.Tk()
-    app = TaskManagerInterface(root)
+    app = TaskManagerInterface(root, db)
+
     root.mainloop()
 
 
