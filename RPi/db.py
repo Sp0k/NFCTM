@@ -35,6 +35,10 @@ class DatabaseManager:
         cursor.execute(query)
         return cursor.fetchall()
 
+    def delete_task(self, task_id):
+        with self.connection:
+            self.connection.execute("DELETE FROM tasks WHERE id = ?", (task_id,))
+
     def delete_all_tasks(self):
         with self.connection:
             self.connection.execute("DELETE FROM tasks")

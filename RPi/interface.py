@@ -1,5 +1,5 @@
 import tkinter as tk
-from tkinter import Canvas, Frame
+from tkinter import Canvas, Checkbutton, Frame
 from datetime import datetime, timedelta
 import random
 
@@ -199,19 +199,50 @@ class TaskManagerInterface:
             widget.destroy()
 
         for task in tasks:
-            task_label = tk.Label(
-                self.tasks_frame,
-                text=f"{task[1]} (Due: {task[2]})",
+            task_frame = tk.Frame(self.tasks_frame, bg="#010209")
+            task_frame.pack(fill=tk.X, pady=5)
+
+            # Checkbutton to mark the task as completed
+            completed_var = tk.BooleanVar()
+            check_button = tk.Checkbutton(
+                task_frame,
+                variable=completed_var,
+                command=lambda task_id=task[0]: self.complete_task(task_id),
+                bg="#010209",
+                fg="#D9D9D9",
+                selectcolor="#d9534f",
+            )
+            check_button.pack(side=tk.LEFT, padx=10)
+
+            # Task title in the middle
+            task_title = tk.Label(
+                task_frame,
+                text=task[1],
                 bg="#010209",
                 fg="#D9D9D9",
                 font=("Nunito Sans", 18),
                 anchor="w",
             )
-            task_label.pack(padx=10, pady=5, fill=tk.X)
+            task_title.pack(side=tk.LEFT, padx=10, expand=True, fill=tk.X)
 
-            # Bind touch events directly to each task label
-            task_label.bind("<ButtonPress-1>", self.start_scroll)
-            task_label.bind("<B1-Motion>", self.on_scroll)
+            # Due date on the right
+            formatted_date = datetime.strptime(task[2], "%Y-%m-%d").strftime("%b. %d")
+            due_date_label = tk.Label(
+                task_frame,
+                text=formatted_date,
+                bg="#010209",
+                fg="#D9D9D9",
+                font=("Nunito Sans", 18),
+                anchor="e",
+            )
+            due_date_label.pack(side=tk.RIGHT, padx=10)
+
+    def complete_task(self, task_id):
+        if isinstance(task_id, int):
+            self.db.delete_task(task_id)
+            self.display_tasks(self.db.get_tasks())
+        else:
+            print("Invalid task_id:", task_id)
 
     def sort_by_due_date(self):
         tasks = self.db.get_tasks(order_by="due_date ASC")
