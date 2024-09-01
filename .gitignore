@@ -194,3 +194,6 @@ cython_debug/
 
 # Source file for typst
 *.typ
+
+# JetBrains IDE
+.idea/
