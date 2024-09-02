@@ -1,5 +1,5 @@
 import tkinter as tk
-from tkinter import Canvas, Checkbutton, Frame
+from tkinter import Canvas, Frame
 from datetime import datetime, timedelta
 import random
 
@@ -74,26 +74,30 @@ class TaskManagerInterface:
             sidebar,
             text="Due Date",
             bg="#010209",
-            fg="#D9D9D9",
+            fg="#459DDE",
             padx=2,
             pady=4,
             font=("Nunito Sans", 18),
             activebackground="#010209",
-            activeforeground="#FFFFFF",
+            activeforeground="#459DDE",
             command=self.sort_by_due_date,
+            highlightbackground="#459DDE",
+            highlightcolor="#459DDE",
         )
 
         btn_priority = tk.Button(
             sidebar,
             text="Priority",
             bg="#010209",
-            fg="#D9D9D9",
+            fg="#459DDE",
             padx=2,
             pady=4,
             font=("Nunito Sans", 18),
             activebackground="#010209",
-            activeforeground="#FFFFFF",
+            activeforeground="#459DDE",
             command=self.sort_by_priority,
+            highlightbackground="#459DDE",
+            highlightcolor="#459DDE",
         )
 
         btn_new_test = tk.Button(
@@ -195,24 +199,56 @@ class TaskManagerInterface:
         self.canvas.scan_dragto(event.x, event.y, gain=1)
 
     def display_tasks(self, tasks):
+        # Define colors based on priority levels
+        priority_colors = {
+            0: "#334155",  # Low priority
+            1: "#0F766E",  # Medium priority
+            2: "#CA8A04",  # High priority
+            3: "#BE123C",  # Urgent priority
+        }
+
         for widget in self.tasks_frame.winfo_children():
             widget.destroy()
 
         for task in tasks:
-            task_frame = tk.Frame(self.tasks_frame, bg="#010209")
-            task_frame.pack(fill=tk.X, pady=5)
+            task_frame = tk.Frame(self.tasks_frame, bg="#010209", width=621, height=74)
+            task_frame.pack(fill=tk.X, padx=5)
+            task_frame.pack_propagate(False)
 
-            # Checkbutton to mark the task as completed
-            completed_var = tk.BooleanVar()
-            check_button = tk.Checkbutton(
+            line_top = Canvas(
                 task_frame,
-                variable=completed_var,
+                width=600,
+                height=0.1,
+                bg="#475569",
+                highlightthickness=0,
+            )
+            line_top.pack(fill=tk.Y, side=tk.TOP)
+
+            line_bottom = Canvas(
+                task_frame,
+                width=600,
+                height=0.1,
+                bg="#475569",
+                highlightthickness=0,
+            )
+            line_bottom.pack(fill=tk.Y, side=tk.BOTTOM)
+
+            priority_color = priority_colors.get(int(task[4]), "#334155")
+
+            check_button = tk.Button(
+                task_frame,
                 command=lambda task_id=task[0]: self.complete_task(task_id),
                 bg="#010209",
-                fg="#D9D9D9",
-                selectcolor="#d9534f",
+                fg=priority_color,
+                highlightbackground=priority_color,
+                highlightcolor=priority_color,
+                highlightthickness=2,
+                activebackground=priority_color,
+                width=2,
+                height=2,
             )
-            check_button.pack(side=tk.LEFT, padx=10)
+            check_button.pack(side=tk.LEFT, padx=25, pady=15)
+            check_button.pack_propagate(False)
 
             # Task title in the middle
             task_title = tk.Label(
@@ -223,7 +259,7 @@ class TaskManagerInterface:
                 font=("Nunito Sans", 18),
                 anchor="w",
             )
-            task_title.pack(side=tk.LEFT, padx=10, expand=True, fill=tk.X)
+            task_title.pack(side=tk.LEFT, padx=10, fill=tk.X)
 
             # Due date on the right
             formatted_date = datetime.strptime(task[2], "%Y-%m-%d").strftime("%b. %d")
@@ -235,7 +271,7 @@ class TaskManagerInterface:
                 font=("Nunito Sans", 18),
                 anchor="e",
             )
-            due_date_label.pack(side=tk.RIGHT, padx=10)
+            due_date_label.pack(side=tk.RIGHT, padx=25)
 
     def complete_task(self, task_id):
         if isinstance(task_id, int):
